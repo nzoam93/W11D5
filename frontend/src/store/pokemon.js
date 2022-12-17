@@ -17,7 +17,7 @@ const loadTypes = types => ({
   types
 });
 
-const addOnePokemon = pokemon => ({
+const addOnePokemon = (pokemon) => ({
   type: ADD_ONE,
   pokemon
 });
@@ -39,6 +39,47 @@ export const getPokemonTypes = () => async dispatch => {
     dispatch(loadTypes(types));
   }
 };
+
+export const getPokemonDetails = (pokemonId) => async dispatch => {
+  const response = await fetch(`/api/pokemon/${pokemonId}`);
+
+  if (response.ok){
+    const pokemon = await response.json();
+    dispatch(addOnePokemon(pokemon));
+  }
+} 
+
+export const createPokemon = (pokemon) => async dispatch => {
+  const response = await fetch(`/api/pokemon`, {
+    method: 'POST',
+    body: JSON.stringify(pokemon),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  });
+
+  if(response.ok){
+    const newPokemon = await response.json();
+    dispatch(addOnePokemon(newPokemon));
+  }
+} 
+
+export const editPokemon = (pokemon) => async dispatch => {
+  const response = await fetch(`/api/pokemon/${pokemon.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(pokemon),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  });
+
+  if (response.ok){
+    const editedPokemon = await response.json();
+    dispatch(addOnePokemon(editedPokemon));
+  }
+}
 
 const initialState = {
   list: [],
